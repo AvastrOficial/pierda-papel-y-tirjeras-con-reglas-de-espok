@@ -1,0 +1,187 @@
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego de piedra, papel, tijeras</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+
+</style>
+</head>
+<body>
+
+  <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+<div id="menu" class="menu">  
+   <img src="https://files.catbox.moe/yc3hax.gif" width="250" height="150">
+  <ul>
+ <li><a id="infoLink" class="boton">Como funciona?</a></li>
+ <li><a class="boton" href="https://github.com/AvastrOficial/pierda-papel-y-tirjeras-con-reglas-de-espok">Documentación <i class="fab fa-github"></i></a></li>
+    
+    
+  </ul>
+</div>
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+  
+  
+
+<div class="header">
+  
+  <div id="tablero">
+  <div id="tirada-jugador" class="tirada">
+    <h2 id="marcador-jugador">Contador</h2>
+    <div class="tirada-box">
+      <i class="fas fa-hand-rock"></i>
+      <i class="fas fa-hand-paper"></i>
+      <i class="fas fa-hand-scissors"></i>
+            <i class="fas fa-hand-lizard"></i>
+            <i class="fas fa-hand-spock"></i>
+    </div>
+     <h3>TU</h3>
+    <div id="opciones">
+     <h3>Elige:
+    <i id="piedra" class="fas fa-hand-rock selector-tiro"></i>
+    <i id="papel" class="fas fa-hand-paper selector-tiro"></i>
+    <i id="tijeras" class="fas fa-hand-scissors selector-tiro"></i>
+    <i id="lagarto" class="fas fa-hand-lizard selector-tiro"></i>
+    <i id="spock" class="fas fa-hand-spock selector-tiro"></i>
+  </h3>  
+    </div>
+    
+  </div>
+  <div id="tirada-computadora" class="tirada">
+    <h2 id="marcador-computadora">Contador</h2>
+      <div id="tirada-compu" class="tirada-box esperando">
+      <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWowdDcwcTRtMHBxejRwN2FsaXh5cWMyYnliajJha2R3MHBhbXUybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/S6q7p6G70qH6YVupi3/giphy.gif" class="esperando"/>
+      <i class="fas fa-hand-rock"></i>
+      <i class="fas fa-hand-paper"></i>
+      <i class="fas fa-hand-scissors"></i>
+        <i class="fas fa-hand-lizard"></i>
+            <i class="fas fa-hand-spock"></i>
+    </div>
+    <h3>Bot</h3>
+  </div>
+  <div id="resultados">
+    <h2 id="texto-gana">¡Ganaste!</h2>
+    <h2 id="texto-pierde">¡Perdiste!</h2>
+    <h2 id="texto-empata">¡Empate!</h2>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+<div>
+<svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+<defs>
+<path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+</defs>
+<g class="parallax">
+<use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+<use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+<use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+<use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+</g>
+</svg>
+</div>
+
+
+ 
+  
+</div>
+
+<div class="content flex">
+    
+   
+  
+</div>
+
+<div id="informacionOculta" style="display: none;">
+  <div class="rectangulo">
+       <h1>Descripción del Juego de Piedra, Papel o Tijeras</h1>
+        <h2>Inicialización de variables:</h2>
+        <p>Se define una variable llamada <em>marcadorGlobal</em> que almacena el marcador global del juego. Inicialmente, está establecida en [0, 0], lo que indica que ambos jugadores (jugador y computadora) tienen 0 puntos al principio del juego.</p>
+        <h2>Función ganaJugador:</h2>
+        <p>Esta función toma dos argumentos: <em>tiro</em> (la elección del jugador) y <em>tiroComputadora</em> (la elección de la computadora). Evalúa si el jugador gana comparando las elecciones. Si el jugador gana, devuelve <em>true</em>; de lo contrario, devuelve <em>false</em>.</p>
+        <h2>Función actualizarMarcador:</h2>
+        <p>Esta función toma cuatro parámetros: <em>gano</em> (booleano que indica si el jugador ganó), <em>empate</em> (booleano que indica si hay un empate), <em>jugador</em> (puntos del jugador) y <em>computadora</em> (puntos de la computadora). Actualiza el marcador dependiendo del resultado del juego. Si hay un empate, los puntos no cambian. Si el jugador gana, se incrementa su puntaje. Si la computadora gana, se incrementa su puntaje.</p>
+        <h2>Evento click en .selector-tiro:</h2>
+        <p>Este evento se activa cuando el usuario hace clic en uno de los elementos con la clase <code>.selector-tiro</code>. Estos elementos representan las opciones de juego: piedra, papel o tijeras. Cuando el jugador elige una opción, se ejecuta el código dentro de la función de callback asociada al evento click. Se obtiene la elección del jugador y se actualiza visualmente en la interfaz del usuario. La computadora elige aleatoriamente una opción (piedra, papel o tijeras) y se muestra en la interfaz. Se determina el resultado del juego (ganar, perder o empatar) comparando las selecciones del jugador y la computadora. Se actualiza el marcador del juego según el resultado. Los marcadores actualizados se muestran en la interfaz del usuario.</p>
+        <p>En resumen, este código controla la lógica de un juego simple de piedra, papel o tijeras entre un jugador y la computadora, y actualiza el marcador según el resultado de cada ronda.</p>
+    </div>
+     
+  </div>
+  
+  
+  
+  
+
+<script>
+   $(document).ready(function() {
+      var marcadorGlobal = [0, 0];
+
+      function ganaJugador(tiro, tiroComputadora) {
+        var reglas = {
+          'piedra': ['tijeras', 'lagarto'],
+          'papel': ['piedra', 'spock'],
+          'tijeras': ['papel', 'lagarto'],
+          'lagarto': ['spock', 'papel'],
+          'spock': ['tijeras', 'piedra']
+        };
+        return reglas[tiro].includes(tiroComputadora);
+      }
+
+      function actualizarMarcador(gano, empate, jugador, computadora) {
+        if(empate) {
+          return [jugador, computadora];
+        } 
+        if(gano) {
+          return [jugador + 1, computadora];
+        }
+        return [jugador, computadora + 1];
+      }
+
+      $(".selector-tiro").click(function(){
+        var seleccion = this.id;
+        var tiradaBox = $("#tirada-jugador .tirada-box");
+        tiradaBox.removeClass('piedra papel tijeras lagarto spock');
+        tiradaBox.addClass(seleccion);
+        
+        var opciones = ['piedra', 'papel', 'tijeras', 'lagarto', 'spock']
+        var tiradaCompuBox = $("#tirada-compu");
+        tiradaCompuBox.removeClass('piedra papel tijeras lagarto spock');
+        tiradaCompuBox.addClass('esperando');
+        
+        setTimeout(function() {
+          var tiradaComputadora = opciones[Math.floor(Math.random() * 5)];
+          tiradaCompuBox.removeClass('esperando');
+          tiradaCompuBox.addClass(tiradaComputadora);
+          
+          var resultadoBox = $("#resultados");
+          resultadoBox.removeClass();
+          resultadoBox.show();
+          var juegoGanado = ganaJugador(seleccion, tiradaComputadora);
+          var empate = seleccion == tiradaComputadora;
+          
+          if(empate) {
+            resultadoBox.addClass('empata');
+          } else if(juegoGanado) {
+            resultadoBox.addClass('gana');
+          } else {
+            resultadoBox.addClass('pierde');
+          }
+          
+          var marcador = actualizarMarcador(juegoGanado, empate, marcadorGlobal[0], marcadorGlobal[1]);
+          marcadorGlobal[0] = marcador[0];
+          marcadorGlobal[1] = marcador[1];
+          
+          $("#marcador-jugador").text(marcador[0]);
+          $("#marcador-computadora").text(marcador[1]);
+        }, 300);
+      });
+    });
+</script>
+</body>
+</html>

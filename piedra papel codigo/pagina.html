@@ -1,0 +1,578 @@
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego de piedra, papel, tijeras</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+
+.menu-btn {
+  position: absolute; /* Cambia la posición a absoluta para que esté arriba de todo */
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #ffff;
+  cursor: pointer;
+  z-index: 9999; /* Ajusta el índice z para que esté por encima de todo */
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100vh;
+  background-color: #f0f0f0;
+  transition: left 0.4s ease;
+  z-index: 999; /* Asegúrate de que el menú tenga un índice z menor */
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.menu ul li {
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc; /* Agrega un borde inferior */
+}
+
+.menu ul li:last-child {
+  border-bottom: none; /* Elimina el borde inferior del último elemento */
+}
+
+.menu ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.menu ul li a:hover {
+  color: #666;
+}
+
+
+body {
+  margin:0;
+}
+
+
+p {
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 1px;
+  font-size:14px;
+  color: #333333;
+}
+
+.header {
+  position:relative;
+  text-align:center;
+  background: linear-gradient(60deg, rgba(84,58,183,1) 0%, rgba(0,172,193,1) 100%);
+  color:white;
+}
+.logo {
+  width:50px;
+  fill:white;
+  padding-right:15px;
+  display:inline-block;
+  vertical-align: middle;
+}
+
+.inner-header {
+  height:65vh;
+  width:100%;
+  margin: 0;
+  padding: 0;
+}
+
+.flex { /*Flexbox for containers*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.waves {
+  position:relative;
+  width: 100%;
+  height:15vh;
+  margin-bottom:-7px; /*Fix for safari gap*/
+  min-height:100px;
+  max-height:150px;
+}
+
+.content {
+  position:relative;
+  height:20vh;
+  text-align:center;
+  background-color: white;
+}
+
+/* Animation */
+
+.parallax > use {
+  animation: move-forever 25s cubic-bezier(.55,.5,.45,.5)     infinite;
+}
+.parallax > use:nth-child(1) {
+  animation-delay: -2s;
+  animation-duration: 7s;
+}
+.parallax > use:nth-child(2) {
+  animation-delay: -3s;
+  animation-duration: 10s;
+}
+.parallax > use:nth-child(3) {
+  animation-delay: -4s;
+  animation-duration: 13s;
+}
+.parallax > use:nth-child(4) {
+  animation-delay: -5s;
+  animation-duration: 20s;
+}
+@keyframes move-forever {
+  0% {
+   transform: translate3d(-90px,0,0);
+  }
+  100% { 
+    transform: translate3d(85px,0,0);
+  }
+}
+/*Shrinking for mobile*/
+@media (max-width: 768px) {
+  .waves {
+    height:40px;
+    min-height:40px;
+  }
+  .content {
+    height:30vh;
+  }
+  h1 {
+    font-size:24px;
+  }
+}
+
+
+
+
+
+
+#tablero {
+  width: 535px;
+  margin: auto;
+}
+
+.tirada {
+  width: 200px;
+  height: 250px;
+  border: 1px solid white;
+  padding: 20px;
+  margin: 20px 10px;
+  float: left;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.tirada h2 {
+  margin: 0;
+  padding: 0 0 10px 0;
+}
+
+.tirada h3 {
+  margin-top: 15px;
+}
+
+.tirada h3 i {
+  font-size: 30px;
+}
+
+.tirada h3 i:hover {
+  color: #27ae60;
+  cursor: pointer;
+}
+
+.tirada-box {
+  width: 100px;
+  height: 100px;
+  background-color: #27ae60;
+  margin: auto;
+  padding: 20px;
+  border-radius: 50%;
+}
+
+.tirada-box i {
+  display: none;
+  font-size: 80px;
+}
+
+.tirada-box.papel .fa-hand-paper {
+  display: block;
+}
+
+.tirada-box.piedra .fa-hand-rock {
+  display: block;
+}
+
+.tirada-box.tijeras .fa-hand-scissors {
+  display: block;
+}
+
+.tirada-box .esperando {
+  display: none;
+}
+.tirada-box.esperando .esperando {
+  width: 110px;
+  display: block;
+}
+
+#resultados {
+  border: 1px solid white;
+  clear: both;
+  padding: 20px;
+  margin-top: 20px;
+  display: none;
+  border-radius: 15px;
+}
+
+#resultados h2{
+  text-align: center;
+  display: none;
+}
+
+#resultados.gana {
+  border-color: #e74c3c;
+  background-color: #f39c12;
+}
+
+
+#resultados.pierde {
+  border-color: #f39c12;
+  background-color:#e74c3c ;
+}
+
+#resultados.empata {
+  border-color: #d35400;
+  background-color: #d35400;
+}
+
+#resultados.gana #texto-gana, #resultados.pierde #texto-pierde, #resultados.empata #texto-empata {
+  display: block;
+}
+
+
+
+.github-link {
+    color: black; /* Color del icono */
+    font-size: 30px; /* Tamaño del icono */
+    transition: color 0.5s; /* Transición de color */
+}
+
+.github-link:hover {
+    color: #333;
+}
+
+.boton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #aed9e0; /* Color de fondo pastel azul */
+  color: rgb(51, 51, 51); /* Color de texto oscuro */
+  text-decoration: none;
+  border: none; /* Sin bordes */
+  border-radius: 5px;
+  transition: background-color 0.3s, box-shadow 0.3s; /* Transiciones suaves */
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  cursor: pointer;
+}
+
+.boton:hover {
+  background-color: #92b7be; 
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); 
+}
+
+
+
+
+ .rectangulo {
+        width: auto;
+        height: auto;
+        background-color: rgba(255, 255, 255, 0.4);
+        padding: 20px; /* Espacio interno */
+    }
+
+    .texto {
+        color: #333; 
+        font-size: 16px; 
+        font-family: Arial, sans-serif; 
+        text-align: center; 
+    }
+
+
+  .tirada-box .esperando {
+  display: none;
+}
+.tirada-box.esperando .esperando {
+ width: 100px; /* Cambia el tamaño según sea necesario */
+  height: 100px; /* Ajusta la altura si es necesario */
+  display: block;
+}
+
+    .lagarto::before {
+      content: "\f2c2";
+    }
+    .spock::before {
+      content: "\f21e";
+    }
+   
+    #resultados {
+      font-size: 1.5em;
+      margin-top: 10px;
+    }
+    #resultados.empata {
+      color: blue;
+    }
+    #resultados.gana {
+      color: green;
+    }
+    #resultados.pierde {
+      color: red;
+    }
+
+
+</style>
+</head>
+<body>
+
+  <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+<div id="menu" class="menu">  
+   <img src="https://files.catbox.moe/yc3hax.gif" width="250" height="150">
+  <ul>
+ <li><a id="infoLink" class="boton">Como funciona?</a></li>
+ <li><a class="boton" href="https://github.com/AvastrOficial/pierda-papel-y-tirjeras-con-reglas-de-espok">Documentación <i class="fab fa-github"></i></a></li>
+    
+    
+  </ul>
+</div>
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+  
+  
+
+<div class="header">
+  
+  <div id="tablero">
+  <div id="tirada-jugador" class="tirada">
+    <h2 id="marcador-jugador">Contador</h2>
+    <div class="tirada-box">
+      <i class="fas fa-hand-rock"></i>
+      <i class="fas fa-hand-paper"></i>
+      <i class="fas fa-hand-scissors"></i>
+            <i class="fas fa-hand-lizard"></i>
+            <i class="fas fa-hand-spock"></i>
+    </div>
+     <h3>TU</h3>
+    <div id="opciones">
+     <h3>Elige:
+    <i id="piedra" class="fas fa-hand-rock selector-tiro"></i>
+    <i id="papel" class="fas fa-hand-paper selector-tiro"></i>
+    <i id="tijeras" class="fas fa-hand-scissors selector-tiro"></i>
+    <i id="lagarto" class="fas fa-hand-lizard selector-tiro"></i>
+    <i id="spock" class="fas fa-hand-spock selector-tiro"></i>
+  </h3>  
+    </div>
+    
+  </div>
+  <div id="tirada-computadora" class="tirada">
+    <h2 id="marcador-computadora">Contador</h2>
+      <div id="tirada-compu" class="tirada-box esperando">
+      <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWowdDcwcTRtMHBxejRwN2FsaXh5cWMyYnliajJha2R3MHBhbXUybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/S6q7p6G70qH6YVupi3/giphy.gif" class="esperando"/>
+      <i class="fas fa-hand-rock"></i>
+      <i class="fas fa-hand-paper"></i>
+      <i class="fas fa-hand-scissors"></i>
+        <i class="fas fa-hand-lizard"></i>
+            <i class="fas fa-hand-spock"></i>
+    </div>
+    <h3>Bot</h3>
+  </div>
+  <div id="resultados">
+    <h2 id="texto-gana">¡Ganaste!</h2>
+    <h2 id="texto-pierde">¡Perdiste!</h2>
+    <h2 id="texto-empata">¡Empate!</h2>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+<div>
+<svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+<defs>
+<path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+</defs>
+<g class="parallax">
+<use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+<use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+<use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+<use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+</g>
+</svg>
+</div>
+
+
+ 
+  
+</div>
+
+<div class="content flex">
+    
+   
+  
+</div>
+
+<div id="informacionOculta" style="display: none;">
+  <div class="rectangulo">
+       <h1>Descripción del Juego de Piedra, Papel o Tijeras</h1>
+        <h2>Inicialización de variables:</h2>
+        <p>Se define una variable llamada <em>marcadorGlobal</em> que almacena el marcador global del juego. Inicialmente, está establecida en [0, 0], lo que indica que ambos jugadores (jugador y computadora) tienen 0 puntos al principio del juego.</p>
+        <h2>Función ganaJugador:</h2>
+        <p>Esta función toma dos argumentos: <em>tiro</em> (la elección del jugador) y <em>tiroComputadora</em> (la elección de la computadora). Evalúa si el jugador gana comparando las elecciones. Si el jugador gana, devuelve <em>true</em>; de lo contrario, devuelve <em>false</em>.</p>
+        <h2>Función actualizarMarcador:</h2>
+        <p>Esta función toma cuatro parámetros: <em>gano</em> (booleano que indica si el jugador ganó), <em>empate</em> (booleano que indica si hay un empate), <em>jugador</em> (puntos del jugador) y <em>computadora</em> (puntos de la computadora). Actualiza el marcador dependiendo del resultado del juego. Si hay un empate, los puntos no cambian. Si el jugador gana, se incrementa su puntaje. Si la computadora gana, se incrementa su puntaje.</p>
+        <h2>Evento click en .selector-tiro:</h2>
+        <p>Este evento se activa cuando el usuario hace clic en uno de los elementos con la clase <code>.selector-tiro</code>. Estos elementos representan las opciones de juego: piedra, papel o tijeras. Cuando el jugador elige una opción, se ejecuta el código dentro de la función de callback asociada al evento click. Se obtiene la elección del jugador y se actualiza visualmente en la interfaz del usuario. La computadora elige aleatoriamente una opción (piedra, papel o tijeras) y se muestra en la interfaz. Se determina el resultado del juego (ganar, perder o empatar) comparando las selecciones del jugador y la computadora. Se actualiza el marcador del juego según el resultado. Los marcadores actualizados se muestran en la interfaz del usuario.</p>
+        <p>En resumen, este código controla la lógica de un juego simple de piedra, papel o tijeras entre un jugador y la computadora, y actualiza el marcador según el resultado de cada ronda.</p>
+    </div>
+     
+  </div>
+  
+  
+  
+  
+
+<script>
+   $(document).ready(function() {
+      var marcadorGlobal = [0, 0];
+
+      function ganaJugador(tiro, tiroComputadora) {
+        var reglas = {
+          'piedra': ['tijeras', 'lagarto'],
+          'papel': ['piedra', 'spock'],
+          'tijeras': ['papel', 'lagarto'],
+          'lagarto': ['spock', 'papel'],
+          'spock': ['tijeras', 'piedra']
+        };
+        return reglas[tiro].includes(tiroComputadora);
+      }
+
+      function actualizarMarcador(gano, empate, jugador, computadora) {
+        if(empate) {
+          return [jugador, computadora];
+        } 
+        if(gano) {
+          return [jugador + 1, computadora];
+        }
+        return [jugador, computadora + 1];
+      }
+
+      $(".selector-tiro").click(function(){
+        var seleccion = this.id;
+        var tiradaBox = $("#tirada-jugador .tirada-box");
+        tiradaBox.removeClass('piedra papel tijeras lagarto spock');
+        tiradaBox.addClass(seleccion);
+        
+        var opciones = ['piedra', 'papel', 'tijeras', 'lagarto', 'spock']
+        var tiradaCompuBox = $("#tirada-compu");
+        tiradaCompuBox.removeClass('piedra papel tijeras lagarto spock');
+        tiradaCompuBox.addClass('esperando');
+        
+        setTimeout(function() {
+          var tiradaComputadora = opciones[Math.floor(Math.random() * 5)];
+          tiradaCompuBox.removeClass('esperando');
+          tiradaCompuBox.addClass(tiradaComputadora);
+          
+          var resultadoBox = $("#resultados");
+          resultadoBox.removeClass();
+          resultadoBox.show();
+          var juegoGanado = ganaJugador(seleccion, tiradaComputadora);
+          var empate = seleccion == tiradaComputadora;
+          
+          if(empate) {
+            resultadoBox.addClass('empata');
+          } else if(juegoGanado) {
+            resultadoBox.addClass('gana');
+          } else {
+            resultadoBox.addClass('pierde');
+          }
+          
+          var marcador = actualizarMarcador(juegoGanado, empate, marcadorGlobal[0], marcadorGlobal[1]);
+          marcadorGlobal[0] = marcador[0];
+          marcadorGlobal[1] = marcador[1];
+          
+          $("#marcador-jugador").text(marcador[0]);
+          $("#marcador-computadora").text(marcador[1]);
+        }, 300);
+      });
+    });
+
+
+function toggleMenu() {
+  var menu = document.getElementById("menu");
+  if (menu.style.left === "-250px") {
+    menu.style.left = "0";
+  } else {
+    menu.style.left = "-250px";
+  }
+}
+
+function showCircle() {
+  var circle = document.getElementById("circle");
+  circle.style.display = "block";
+}
+
+function hideCircle() {
+  var circle = document.getElementById("circle");
+  circle.style.display = "none";
+}
+
+
+document.getElementById("infoLink").addEventListener("click", function(event) {
+  event.preventDefault(); // Evita que el enlace redirija a otra página
+  
+  var informacionOculta = document.getElementById("informacionOculta");
+  
+  // Si el contenido está oculto, muéstralo; si está visible, ocúltalo
+  if (informacionOculta.style.display === "none") {
+    informacionOculta.style.display = "block";
+  } else {
+    informacionOculta.style.display = "none";
+  }
+});
+
+
+
+ $(document).ready(function() {
+        // Variable para guardar la posición de desplazamiento anterior
+        var lastScrollTop = 0;
+
+        // Función para manejar el evento de desplazamiento
+        $(window).scroll(function() {
+            var currentScroll = $(this).scrollTop();
+
+            // Verificamos si el desplazamiento es hacia abajo y si el menú no está oculto
+            if (currentScroll > lastScrollTop && $('#menu').css('top') !== '-100px') {
+                $('#menu').stop().animate({ top: '-900px' }, 300); // Ocultamos el menú con animación
+            } else if (currentScroll < lastScrollTop && $('#menu').css('top') === '-900px') {
+                $('#menu').stop().animate({ top: '0' }, 300); // Mostramos el menú con animación
+            }
+
+            lastScrollTop = currentScroll;
+        });
+    });
+
+
+</script>
+</body>
+</html>
